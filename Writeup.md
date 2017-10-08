@@ -17,6 +17,7 @@ The goals / steps of this project are the following:
 [image6]: ./examples/placeholder.png "Traffic Sign 3"
 [image7]: ./examples/placeholder.png "Traffic Sign 4"
 [image8]: ./examples/placeholder.png "Traffic Sign 5"
+[image9]: ./examples/two-stage-convnet-architecture.png "2-stage ConvNet architecture"
 
 ## Rubric Points
 
@@ -46,17 +47,21 @@ As a first step, I decided to convert the images to YCrCb color space and use th
 
 As a next step, I normalized the image data for mathematical reasons. Normalized data can make the training faster and reduce the chance of getting stuck in local optima.
 
-I decided to generate additional data because ... 
+#I decided to generate additional data because ... 
 
-To add more data to the the data set, I used the following techniques because ... Here is an example of an original image and an augmented image:
+#To add more data to the the data set, I used the following techniques because ... Here is an example of an original image and an augmented image:
 
-![alt text][image3]
+#![alt text][image3]
 
-The difference between the original data set and the augmented data set is the following ... 
+#The difference between the original data set and the augmented data set is the following ... 
 
-####2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
+The architecture used here departs from traditional ConvNets by the type of non-linearities used, by the use of connections that skip layers, and by the use of pooling layers with different subsampling ratios for the connections that skip layers and for those that do not. As described by [Pierre Sermanet and Yann LeCun](http://yann.lecun.com/exdb/publis/pdf/sermanet-ijcnn-11.pdf), each stage is composed of a (convolutional) filter bank layer, a non-linear transform layer, and a spatial feature pooling layer.
 
-My final model consisted of the following layers:
+In traditional ConvNets, the output of the last stage is fed to a classifier. Here, the outputs of all the stages are fed to the classifier. The motivation for combining representation from multiple stages in the classifier is to provide different scales of receptive fields to the classifier. In the case of 2 stages of features, the second stage extracts “global” and invariant shapes and structures, while the first stage extracts “local” motifs with more precise details.
+
+![alt text][image9]
+
+The final model consisted of the following layers:
 
 | Layer         		| Description									| 
 |:---------------------:|:---------------------------------------------:|
@@ -78,8 +83,6 @@ My final model consisted of the following layers:
 | Dropout				|												|
 | Fully connected		| outputs 43									|
 |						|												|
- 
-
 
 ####3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
@@ -88,9 +91,9 @@ To train the model, I used an ....
 ####4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 My final model results were:
-* training set accuracy of ?
-* validation set accuracy of ? 
-* test set accuracy of ?
+* Training set accuracy of 0.999
+* Validation set accuracy of 0.946
+* Test set accuracy of 0.935
 
 If an iterative approach was chosen:
 * What was the first architecture that was tried and why was it chosen?
@@ -103,7 +106,6 @@ If a well known architecture was chosen:
 * What architecture was chosen?
 * Why did you believe it would be relevant to the traffic sign application?
 * How does the final model's accuracy on the training, validation and test set provide evidence that the model is working well?
- 
 
 ###Test a Model on New Images
 
@@ -120,13 +122,13 @@ The first image might be difficult to classify because ...
 
 Here are the results of the prediction:
 
-| Image			        |     Prediction	        					| 
+| Image			        | Prediction									| 
 |:---------------------:|:---------------------------------------------:| 
-| Stop Sign      		| Stop sign   									| 
-| U-turn     			| U-turn 										|
+| Stop Sign      		| Stop sign										| 
+| U-turn     			| U-turn										|
 | Yield					| Yield											|
-| 100 km/h	      		| Bumpy Road					 				|
-| Slippery Road			| Slippery Road      							|
+| 100 km/h	      		| Bumpy Road									|
+| Slippery Road			| Slippery Road									|
 
 
 The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of ...
