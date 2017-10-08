@@ -9,7 +9,7 @@ The goals / steps of this project are the following:
 * Summarize the results with a written report
 
 [//]: # (Image References)
-[image1]: ./examples/visualization.jpg "Visualization"
+[image1]: ./examples/dataset_exploratory_visualization.png "Dataset Exploratory Visualization"
 [image2]: ./examples/grayscale.jpg "Grayscaling"
 [image3]: ./examples/random_noise.jpg "Random Noise"
 [image4]: ./examples/placeholder.png "Traffic Sign 1"
@@ -32,49 +32,51 @@ I used the numpy library to calculate summary statistics of the traffic signs da
 * The shape of a traffic sign image is (32, 32, 3); that's 32 pixels for both width and height and 3 color channels.
 * The number of unique classes/labels in the data set is 43.
 
-####2. Include an exploratory visualization of the dataset.
+Here is an exploratory visualization of the data set. It is a bar chart showing how the data is distributed across the 43 unique traffic signs.
 
-Here is an exploratory visualization of the data set. It is a bar chart showing how the data ...
-
-![alt text][image1]
+![Dataset Exploratory Visualization][image1]
 
 ### Design and Test a Model Architecture
 
 ####1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
 
-As a first step, I decided to convert the images to grayscale because ...
-
-Here is an example of a traffic sign image before and after grayscaling.
+As a first step, I decided to convert the images to YCrCb color space and use the y-channel. Reducing to one channel reduces the amount of input data, training the model is significantly faster. Here is an example of a traffic sign image before and after grayscaling.
 
 ![alt text][image2]
 
-As a last step, I normalized the image data because ...
+As a next step, I normalized the image data for mathematical reasons. Normalized data can make the training faster and reduce the chance of getting stuck in local optima.
 
 I decided to generate additional data because ... 
 
-To add more data to the the data set, I used the following techniques because ... 
-
-Here is an example of an original image and an augmented image:
+To add more data to the the data set, I used the following techniques because ... Here is an example of an original image and an augmented image:
 
 ![alt text][image3]
 
 The difference between the original data set and the augmented data set is the following ... 
 
-
 ####2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
 My final model consisted of the following layers:
 
-| Layer         		|     Description	        					| 
-|:---------------------:|:---------------------------------------------:| 
-| Input         		| 32x32x3 RGB image   							| 
-| Convolution 3x3     	| 1x1 stride, same padding, outputs 32x32x64 	|
+| Layer         		| Description									| 
+|:---------------------:|:---------------------------------------------:|
+| Input         		| 32x32x3 RGB image   							|
+| Convolution 5x5     	| 1x1 stride, same padding, outputs 28x28x6 	|
 | RELU					|												|
-| Max pooling	      	| 2x2 stride,  outputs 16x16x64 				|
-| Convolution 3x3	    | etc.      									|
-| Fully connected		| etc.        									|
-| Softmax				| etc.        									|
-|						|												|
+| Max pooling	      	| 2x2 stride,  outputs 14x14x6					|
+| Convolution 5x5	    | 1x1 stride, same padding, outputs 10x10x16	|
+| RELU					|												|
+| Max pooling	      	| 2x2 stride,  outputs 5x5x16					|
+| Flatten				| outputs 400 -> **1st stage**					|
+| Convolution 5x5	    | 1x1 stride, same padding, outputs 1x1x400		|
+| RELU					|												|
+| Flatten				| outputs 400 -> **2nd stage**					|
+| Concat stages 1 & 2	| 400+400, outputs 800							|
+| Dropout				|												|
+| Fully connected		| outputs 100									|
+| RELU					|												|
+| Dropout				|												|
+| Fully connected		| outputs 43									|
 |						|												|
  
 
