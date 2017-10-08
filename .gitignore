@@ -3,3 +3,5 @@ traffic-signs-data.zip
 train.p
 test.p
 valid.p
+checkpoint
+lenet.*
