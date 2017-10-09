@@ -113,8 +113,11 @@ If a well known architecture was chosen:
 
 Here are five German traffic signs that I found on the web:
 
-![alt text][image4] ![alt text][image5] ![alt text][image6] 
-![alt text][image7] ![alt text][image8]
+<img src="./examples/sign-1-speed-limit-30.png" alt="Traffic Sign 1" style="width: 275px" />
+<img src="./examples/sign-2-speed-limit-50.png" alt="Traffic Sign 2" style="width: 275px" />
+<img src="./examples/sign-3-no-passing.png" alt="Traffic Sign 3" style="width: 275px" />
+<img src="./examples/sign-4-road-narrows-on-the-right.png" alt="Traffic Sign 4" style="width: 275px" />
+<img src="./examples/sign-5-stop.png" alt="Traffic Sign 5" style="width: 275px" />
 
 The first image might be difficult to classify because ...
 
