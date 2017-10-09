@@ -12,11 +12,11 @@ The goals / steps of this project are the following:
 [image1]: ./examples/dataset_exploratory_visualization.png "Dataset Exploratory Visualization"
 [image2]: ./examples/grayscale.jpg "Grayscaling"
 [image3]: ./examples/random_noise.jpg "Random Noise"
-[image4]: ./examples/placeholder.png "Traffic Sign 1"
-[image5]: ./examples/placeholder.png "Traffic Sign 2"
-[image6]: ./examples/placeholder.png "Traffic Sign 3"
-[image7]: ./examples/placeholder.png "Traffic Sign 4"
-[image8]: ./examples/placeholder.png "Traffic Sign 5"
+[image4]: ./examples/sign-1-speed-limit-30.png "Traffic Sign 1"
+[image5]: ./examples/sign-2-speed-limit-50.png "Traffic Sign 2"
+[image6]: ./examples/sign-3-no-passing.png "Traffic Sign 3"
+[image7]: ./examples/sign-4-road-narrows-on-the-right.png "Traffic Sign 4"
+[image8]: ./examples/sign-5-stop.png "Traffic Sign 5"
 [image9]: ./examples/two-stage-convnet-architecture.png "2-stage ConvNet architecture"
 
 ## Rubric Points
