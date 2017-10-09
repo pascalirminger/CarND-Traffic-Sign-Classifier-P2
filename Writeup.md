@@ -53,6 +53,10 @@ As a next step, I normalized the image data for mathematical reasons. Normalized
 
 #![alt text][image3]
 
+I also decided to shuffle the training set using ```shuffle``` from ```sklearn.utils``` library:
+
+```X_train, y_train = shuffle(X_train, y_train)```
+
 #The difference between the original data set and the augmented data set is the following ... 
 
 The architecture used here departs from traditional ConvNets by the type of non-linearities used, by the use of connections that skip layers, and by the use of pooling layers with different subsampling ratios for the connections that skip layers and for those that do not. As described by [Pierre Sermanet and Yann LeCun](http://yann.lecun.com/exdb/publis/pdf/sermanet-ijcnn-11.pdf), each stage of this 2-stage ConvNet architecture is composed of a (convolutional) filter bank layer, a non-linear transform layer, and a spatial feature pooling layer.
@@ -63,31 +67,30 @@ In traditional ConvNets, the output of the last stage is fed to a classifier. He
 
 The final model consisted of the following layers:
 
-| Layer                 | Description                                   | 
-|:---------------------:|:---------------------------------------------:|
-| Input                 | 32x32x3 RGB image                             |
-| Convolution 5x5       | 1x1 stride, same padding, outputs 28x28x6     |
-| RELU                  |                                               |
-| Max pooling           | 2x2 stride,  outputs 14x14x6                  |
-| Convolution 5x5       | 1x1 stride, same padding, outputs 10x10x16    |
-| RELU                  |                                               |
-| Max pooling           | 2x2 stride,  outputs 5x5x16                   |
-| Flatten               | outputs 400 -> **1st stage**                  |
-| Convolution 5x5       | 1x1 stride, same padding, outputs 1x1x400     |
-| RELU                  |                                               |
-| Flatten               | outputs 400 -> **2nd stage**                  |
-| Concat stages 1 & 2   | 400+400, outputs 800                          |
-| Dropout               |                                               |
-| Fully connected       | outputs 100                                   |
-| RELU                  |                                               |
-| Dropout               |                                               |
-| Fully connected       | outputs 43                                    |
+| Layer           | Description                                                   | Stage         |
+|:---------------:|:-------------------------------------------------------------:|:-------------:|
+| Input           | 32x32x1 image with Y-channel only                             |               |
+| Convolution 5x5 | input = 32x32x1, 1x1 stride, VALID padding, output = 28x28x6  |               |
+| RELU            |                                                               |               |
+| Max pooling     | input = 28x28x6, 2x2 stride, VALID padding, output = 14x14x6  |               |
+| Convolution 5x5 | input = 14x14x6, 1x1 stride, VALID padding, output = 10x10x16 |               |
+| RELU            |                                                               |               |
+| Max pooling     | input = 10x10x16, 2x2 stride, VALID padding, output = 5x5x16  |               |
+| Flatten         | input = 5x5x16, output = 400                                  | **1st stage** |
+| Convolution 5x5 | input = 5x5x16, 1x1 stride, VALID padding, output = 1x1x400   |               |
+| RELU            |                                                               |               |
+| Flatten         | input = 1x1x400, output = 400                                 | **2nd stage** |
+| Concat stages   | input = 400+400, output = 800                                 |               |
+| Dropout         |                                                               |               |
+| Fully connected | input = 800, output = 100                                     |               |
+| RELU            |                                                               |               |
+| Dropout         |                                                               |               |
+| Fully connected | input = 100, output = 43                                      |               |
 
-To train the model, I used the following parameters:
+For training optimization I used the ```minimize()``` function of a ```tf.train.AdamOptimizer()``` instance using ```tf.nn.softmax_cross_entropy_with_logits()``` and ```tf.reduce_mean()``` as a loss operation. To train the model, I used the following parameters:
 
 | Hyperparameter    | Value          |
 |:-----------------:|:--------------:|
-| Type of optimizer | Adam optimizer |
 | Number of epochs  | 25             |
 | Batch size        | 128            |
 | Learning rate     | 0.001          |
