@@ -55,11 +55,11 @@ As a next step, I normalized the image data for mathematical reasons. Normalized
 
 #The difference between the original data set and the augmented data set is the following ... 
 
-The architecture used here departs from traditional ConvNets by the type of non-linearities used, by the use of connections that skip layers, and by the use of pooling layers with different subsampling ratios for the connections that skip layers and for those that do not. As described by [Pierre Sermanet and Yann LeCun](http://yann.lecun.com/exdb/publis/pdf/sermanet-ijcnn-11.pdf), each stage is composed of a (convolutional) filter bank layer, a non-linear transform layer, and a spatial feature pooling layer.
-
-In traditional ConvNets, the output of the last stage is fed to a classifier. Here, the outputs of all the stages are fed to the classifier. The motivation for combining representation from multiple stages in the classifier is to provide different scales of receptive fields to the classifier. In the case of 2 stages of features, the second stage extracts “global” and invariant shapes and structures, while the first stage extracts “local” motifs with more precise details.
+The architecture used here departs from traditional ConvNets by the type of non-linearities used, by the use of connections that skip layers, and by the use of pooling layers with different subsampling ratios for the connections that skip layers and for those that do not. As described by [Pierre Sermanet and Yann LeCun](http://yann.lecun.com/exdb/publis/pdf/sermanet-ijcnn-11.pdf), each stage of this 2-stage ConvNet architecture is composed of a (convolutional) filter bank layer, a non-linear transform layer, and a spatial feature pooling layer.
 
 ![alt text][image9]
+
+In traditional ConvNets, the output of the last stage is fed to a classifier. Here, the outputs of all the stages are fed to the classifier. The motivation for combining representation from multiple stages in the classifier is to provide different scales of receptive fields to the classifier. In the case of 2 stages of features, the second stage extracts “global” and invariant shapes and structures, while the first stage extracts “local” motifs with more precise details.
 
 The final model consisted of the following layers:
 
