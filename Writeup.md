@@ -9,9 +9,11 @@ The goals / steps of this project are the following:
 * Summarize the results with a written report
 
 [//]: # (Image References)
-[image1]: ./examples/dataset_exploratory_visualization.png "Dataset Exploratory Visualization"
+[image1a]: ./examples/dataset-exploratory-visualization.png "Data Set Visualization"
+[image1b]: ./examples/dataset-exploratory-visualization-augmented.png "Augmented Data Set Visualization"
 [image2]: ./examples/grayscale.jpg "Grayscaling"
-[image3]: ./examples/random_noise.jpg "Random Noise"
+[image3a]: ./examples/augmented-data-1.png "Augmented Data - Example 1"
+[image3b]: ./examples/augmented-data-2.png "Augmented Data - Example 2"
 [image4]: ./examples/sign-1-speed-limit-30.png "Traffic Sign 1"
 [image5]: ./examples/sign-2-speed-limit-50.png "Traffic Sign 2"
 [image6]: ./examples/sign-3-no-passing.png "Traffic Sign 3"
@@ -35,11 +37,9 @@ I used the numpy library to calculate summary statistics of the traffic signs da
 
 Here is an exploratory visualization of the data set. It is a bar chart showing how the data is distributed across the 43 unique traffic signs.
 
-![Dataset Exploratory Visualization][image1]
+![Data Set Visualization][image1a]
 
 ### Design and Test a Model Architecture
-
-####1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
 
 As a first step, I decided to convert the images to YCrCb color space and use the y-channel. Reducing to one channel reduces the amount of input data, training the model is significantly faster. Here is an example of a traffic sign image before and after grayscaling.
 
@@ -47,17 +47,33 @@ As a first step, I decided to convert the images to YCrCb color space and use th
 
 As a next step, I normalized the image data for mathematical reasons. Normalized data can make the training faster and reduce the chance of getting stuck in local optima.
 
-#I decided to generate additional data because ... 
+I decided to generate additional data because the number of images per sign varies strongly (see diagram above). ConvNet architectures have built-in invariance to small translations, scaling and rotations. When a dataset does not naturally contain those deformations, adding them synthetically will yield more robust learning to potential deformations in the test set.
 
-#To add more data to the the data set, I used the following techniques because ... Here is an example of an original image and an augmented image:
+The data augmentation process uses several different functions and combines them randomly to generate a jittered training dataset. Samples are randomly perturbed in position, in scale, and in rotation; they are sheared, blurred, and gamma transformed. You can find the corresponding code in the following functions:
 
-#![alt text][image3]
+* ```translateImage(img)```
+* ```rotateImage(img)```
+* ```shearImage(img)```
+* ```blurImage(img)```
+* ```gammaImage(img)```
+
+A function ```processRandom(img)``` creates a new image with random adoption of the functions above. Here are some examples of an original image and an augmented image:
+
+![alt text][image3a]
+![alt text][image3b]
+
+The function ```augmentData(X, y, scale)``` enriches the dataset based on the number of images per sign.
+
+* Signs with a lot of images (above mean) will only get a few examples added.
+* Signs with only a few images (below mean) will get a lot of examples added.
+
+The difference between the original data set and the augmented data set is remarkable based on the following diagram. The size of the augmented training set is 140'365.
+
+![Augmented Data Set Visualization][image1b]
 
 I also decided to shuffle the training set using ```shuffle``` from ```sklearn.utils``` library:
 
 ```X_train, y_train = shuffle(X_train, y_train)```
-
-#The difference between the original data set and the augmented data set is the following ... 
 
 The architecture used here departs from traditional ConvNets by the type of non-linearities used, by the use of connections that skip layers, and by the use of pooling layers with different subsampling ratios for the connections that skip layers and for those that do not. As described by [Pierre Sermanet and Yann LeCun](http://yann.lecun.com/exdb/publis/pdf/sermanet-ijcnn-11.pdf), each stage of this 2-stage ConvNet architecture is composed of a (convolutional) filter bank layer, a non-linear transform layer, and a spatial feature pooling layer.
 
@@ -99,9 +115,9 @@ For training optimization I used the ```minimize()``` function of a ```tf.train.
 ####4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 My final model results were:
-* Training set accuracy of 0.998
-* Validation set accuracy of 0.951
-* Test set accuracy of 0.939
+* Training set accuracy of 0.976
+* Validation set accuracy of 0.976
+* Test set accuracy of 0.948
 
 If an iterative approach was chosen:
 * What was the first architecture that was tried and why was it chosen?
@@ -174,7 +190,7 @@ For the third image ...
 |  .00            | End of no passing                |
 |  .00            | No passing for vehicles over 3.5 metric tons  |
 
-For the forth image ... 
+For the forth image the ConvNet predicts ```[18 'General caution']```, which is wrong. On of the problems with the correct ```[24 'Road narrows on the right']``` is the lack of a greater presence in the training dataset. Since ```[18 'General caution']``` and ```[24 'Road narrows on the right']``` are slightly similar traffic sings, it is no surprise that ```[18 'General caution']``` is the ConvNets best guess instead. We have to keep an eye on being ```[24 'Road narrows on the right']``` its second best guess.
 
 | Probability     | Prediction                       |
 |:---------------:|:--------------------------------:|
@@ -184,7 +200,7 @@ For the forth image ...
 |  .00            | Speed limit (70km/h)             |
 |  .00            | Wild animals crossing            |
 
-For the fifth image ... 
+For the fifth image the ConvNet predicts ```[14 'Stop']```, which is correct.
 
 | Probability     | Prediction                       |
 |:---------------:|:--------------------------------:|
