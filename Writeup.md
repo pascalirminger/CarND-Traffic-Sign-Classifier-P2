@@ -17,8 +17,8 @@ The goals / steps of this project are the following:
 [image4]: ./examples/sign-1-speed-limit-30.png "Traffic Sign 1"
 [image5]: ./examples/sign-2-speed-limit-50.png "Traffic Sign 2"
 [image6]: ./examples/sign-3-no-passing.png "Traffic Sign 3"
-[image7]: ./examples/sign-4-road-narrows-on-the-right.png "Traffic Sign 4"
-[image8]: ./examples/sign-5-stop.png "Traffic Sign 5"
+[image7]: ./examples/sign-4-stop.png "Traffic Sign 4"
+[image8]: ./examples/sign-5-road-narrows-on-the-right.png "Traffic Sign 5"
 [image9]: ./examples/two-stage-convnet-architecture.png "2-stage ConvNet architecture"
 
 ## Rubric Points
@@ -110,7 +110,7 @@ For training optimization I used the ```minimize()``` function of a ```tf.train.
 | Number of epochs  | 20             |
 | Batch size        | 128            |
 | Learning rate     | 0.001          |
-| Keep probability  | 0.5            |
+| Keep probability  | 0.6            |
 
 ####4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
@@ -119,28 +119,20 @@ My final model results were:
 * Validation set accuracy of 0.976
 * Test set accuracy of 0.948
 
-If an iterative approach was chosen:
-* What was the first architecture that was tried and why was it chosen?
-* What were some problems with the initial architecture?
-* How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to overfitting or underfitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting.
-* Which parameters were tuned? How were they adjusted and why?
-* What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
+In a first approach I used the ConvNet from the classroom and adjusted it to the dimensions here in the traffic sign scenario. Therefore, I increased the first layer to accept three (color-)channels instead of just one (grayscale). Also, the traffic sign classifier has 43 classes where MNIST only had 10, so I had to change that.
 
-If a well known architecture was chosen:
-* What architecture was chosen?
-* Why did you believe it would be relevant to the traffic sign application?
-* How does the final model's accuracy on the training, validation and test set provide evidence that the model is working well?
+The main problem with that was, that the validation accuracy never went greater than 0.87. After trying different things like grayscale and normalization, which surprisingly didn't change the situation much, I ended up finding and reading the paper of [Pierre Sermanet and Yann LeCun](http://yann.lecun.com/exdb/publis/pdf/sermanet-ijcnn-11.pdf). The 2-stage architecture made a lot of sense to me, so I decided to implement this approach within the existing ConvNet from the classroom.
+
+Improving the preprocessing as described above and tuning the hyperparameter increased the validation accuracy from .93 to .96 even more. Playing around with the hyperparameters let the model swing between over fitting and under fitting. The present configuration (see above) is the result of several testing with different values.
 
 ### Test a Model on New Images
-
-####1. Choose five German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
 
 Here are five German traffic signs that I found on the web:
 
 ![Traffic Sign 1][image4] ![Traffic Sign 2][image5] ![Traffic Sign 3][image6] 
 ![Traffic Sign 4][image7] ![Traffic Sign 5][image8]
 
-The first image might be difficult to classify because ...
+The first two images might be difficult to classify because they only differ by the numbers in the sign. The third image might conflict with the other classes regarding no-passing. The fifth image with the stop sign should be the clearest within the group because the signs shape and color distribution. The sign in the forth image seems to be very similar to the general caution sign. It wouldn't surprise me if this image makes troubles.
 
 ####2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
 
@@ -151,8 +143,8 @@ Here are the results of the prediction:
 | Speed limit (30km/h)      | Speed limit (30km/h)              | 
 | Speed limit (50km/h)      | Speed limit (50km/h)              |
 | No passing                | No passing                        |
-| Road narrows on the right | General caution                   |
 | Stop                      | Stop                              |
+| Road narrows on the right | General caution                   |
 
 The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%.
 
@@ -162,53 +154,53 @@ The code for making predictions on my final model is located in the 11th cell of
 
 For the first image, the model is relatively sure that this is a stop sign (probability of 0.6), and the image does contain a stop sign. The top five soft max probabilities were
 
-| Probability     | Prediction                       |
-|:---------------:|:--------------------------------:|
-| 1.00            | Speed limit (30km/h)             |
-|  .00            | Speed limit (20km/h)             |
-|  .00            | Speed limit (70km/h)             |
-|  .00            | Speed limit (50km/h)             |
-|  .00            | Stop                             |
+| Probability  | Prediction                                |
+|:------------:|:-----------------------------------------:|
+| 1.00         | Speed limit (30km/h)                      |
+|  .00         | Speed limit (20km/h)                      |
+|  .00         | Speed limit (70km/h)                      |
+|  .00         | Speed limit (50km/h)                      |
+|  .00         | Speed limit (80km/h)                      |
 
 For the second image ... 
 
-| Probability     | Prediction                       |
-|:---------------:|:--------------------------------:|
-|  .99            | Speed limit (50km/h)             |
-|  .01            | Speed limit (30km/h)             |
-|  .00            | Speed limit (80km/h)             |
-|  .00            | Speed limit (100km/h)            |
-|  .00            | Keep left                        |
+| Probability  | Prediction                                |
+|:------------:|:-----------------------------------------:|
+| 1.00         | Speed limit (50km/h)                      |
+|  .00         | Speed limit (60km/h)                      |
+|  .00         | Speed limit (30km/h)                      |
+|  .00         | Speed limit (80km/h)                      |
+|  .00         | Speed limit (120km/h)                     |
 
 For the third image ... 
 
-| Probability     | Prediction                       |
-|:---------------:|:--------------------------------:|
-|  .98            | No passing                       |
-|  .02            | Vehicles over 3.5 metric tons prohibited      |
-|  .00            | Slippery road                    |
-|  .00            | End of no passing                |
-|  .00            | No passing for vehicles over 3.5 metric tons  |
+| Probability  | Prediction                                |
+|:------------:|:-----------------------------------------:|
+| 1.00         | No passing                                |
+|  .00         | End of no passing                         |
+|  .00         | Speed limit (30km/h)                      |
+|  .00         | End of all speed and passing limits       |
+|  .00         | Vehicles over 3.5 metric tons prohibited  |
 
-For the forth image the ConvNet predicts ```[18 'General caution']```, which is wrong. On of the problems with the correct ```[24 'Road narrows on the right']``` is the lack of a greater presence in the training dataset. Since ```[18 'General caution']``` and ```[24 'Road narrows on the right']``` are slightly similar traffic sings, it is no surprise that ```[18 'General caution']``` is the ConvNets best guess instead. We have to keep an eye on being ```[24 'Road narrows on the right']``` its second best guess.
+For the forth image the ConvNet predicts ```[14 'Stop']```, which is correct.
 
-| Probability     | Prediction                       |
-|:---------------:|:--------------------------------:|
-|  .87            | General caution                  |
-|  .12            | Speed limit (30km/h)             |
-|  .01            | Speed limit (20km/h)             |
-|  .00            | Speed limit (70km/h)             |
-|  .00            | Wild animals crossing            |
+| Probability  | Prediction                                |
+|:------------:|:-----------------------------------------:|
+| 1.00         | Stop                                      |
+|  .00         | Keep right                                |
+|  .00         | Speed limit (60km/h)                      |
+|  .00         | Speed limit (50km/h)                      |
+|  .00         | Ahead only                                |
 
-For the fifth image the ConvNet predicts ```[14 'Stop']```, which is correct.
+For the fifth image the ConvNet predicts ```[18 'General caution']```, which is wrong. On of the problems with the correct ```[24 'Road narrows on the right']``` is the lack of a greater presence in the training dataset. Since ```[18 'General caution']``` and ```[24 'Road narrows on the right']``` are slightly similar traffic sings, it is no surprise that ```[18 'General caution']``` is the ConvNets best guess instead. We have to keep an eye on being ```[24 'Road narrows on the right']``` its second best guess.
 
-| Probability     | Prediction                       |
-|:---------------:|:--------------------------------:|
-| 1.00            | Stop                             |
-|  .00            | Speed limit (30km/h)             |
-|  .00            | Turn right ahead                 |
-|  .00            | Speed limit (70km/h)             |
-|  .00            | Keep right                       |
+| Probability  | Prediction                                |
+|:------------:|:-----------------------------------------:|
+|  .67         | General caution                           |
+|  .33         | Road narrows on the right                 |
+|  .00         | Traffic signals                           |
+|  .00         | Pedestrians                               |
+|  .00         | Road work                                 |
 
 ### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
 ####1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
